@@ -1,7 +1,9 @@
 # 📊 End-to-End Business Intelligence Project | Brazil E-commerce Analytics
 
 End-to-end data analytics project based on a Brazilian e-commerce dataset.  
-Data modeling and transformation were performed in SQL Server, and interactive business intelligence dashboards were developed in Power BI.
+Data transformation were performed in SQL Server, and interactive business intelligence dashboards were developed in Power BI.
+
+Transformed a normalized relational dataset into an analytical fact table optimized for Power BI reporting.
 
 ---
 
@@ -9,9 +11,9 @@ Data modeling and transformation were performed in SQL Server, and interactive b
 
 - SQL Server
 - Power BI
-- Data Modeling
 - DAX
 - Data Cleaning & Transformation
+- ETL
 
 ---
 
