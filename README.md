@@ -8,8 +8,7 @@ The objective was to replicate a real analytical workflow: loading raw CSV files
 
 ## 🗄 Data Source
 
-Dataset: Brazilian E-Commerce Public Dataset by Olist  
-Source: Kaggle (public dataset provided by Olist)     
+Dataset: Brazilian E-Commerce Public Dataset by Olist    
 Reference: https://doi.org/10.34740/kaggle/dsv/195341 
 
 To simulate a real corporate environment:
