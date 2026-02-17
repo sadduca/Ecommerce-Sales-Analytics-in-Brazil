@@ -1,34 +1,53 @@
--- =============================================
---  Review table structures
--- =============================================
-SELECT TOP 5 * FROM dbo.olist_orders_dataset;
-SELECT TOP 5 * FROM dbo.olist_customers_dataset;
-SELECT TOP 5 * FROM dbo.olist_order_items_dataset;
-SELECT TOP 5 * FROM dbo.olist_order_payments_dataset;
-SELECT TOP 5 * FROM dbo.olist_products_dataset;
-SELECT TOP 5 * FROM dbo.product_category_name_translation;
+/* ============================================================
+   OLIST E-COMMERCE – END-TO-END ETL PIPELINE
+   Output: dbo.fact_sales_final
+   Period analyzed: Jan 2017 onward
+============================================================ */
 
--- =============================================
---  Create intermediate cleaned tables
--- =============================================
--- Drop tables if they already exist (in case the script is executed multiple times)
+/* ============================================================
+   1. REVIEW SOURCE TABLE STRUCTURES
+============================================================ */
+
+-- Inspect column names and data types
+SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME IN (
+    'olist_orders_dataset',
+    'olist_customers_dataset',
+    'olist_order_items_dataset',
+    'olist_order_payments_dataset',
+    'olist_products_dataset',
+    'product_category_name_translation'
+)
+ORDER BY TABLE_NAME, ORDINAL_POSITION;
+
+/* ============================================================
+   2. DROP EXISTING TABLES (IDEMPOTENT EXECUTION)
+============================================================ */
+
 DROP TABLE IF EXISTS dbo.olist_order_items_clean;
 DROP TABLE IF EXISTS dbo.olist_order_payments_clean;
+DROP TABLE IF EXISTS dbo.fact_sales;
+DROP TABLE IF EXISTS dbo.fact_sales_final;
 GO
 
--- Adjust prices and freight values
+/* ============================================================
+   3. CLEANING LAYER – MONETARY NORMALIZATION
+============================================================ */
+
+-- Convert price and freight from cents to currency units
 SELECT
     order_id,
     order_item_id,
     product_id,
     seller_id,
     shipping_limit_date,
-    price / 100.0 AS price,
+    price / 100.0         AS price,
     freight_value / 100.0 AS freight_value
 INTO dbo.olist_order_items_clean
 FROM dbo.olist_order_items_dataset;
 
--- Adjust payment values
+-- Convert payment value from cents to currency units
 SELECT
     order_id,
     payment_sequential,
@@ -38,15 +57,9 @@ SELECT
 INTO dbo.olist_order_payments_clean
 FROM dbo.olist_order_payments_dataset;
 
--- Review cleaned tables
-SELECT TOP 5 * FROM dbo.olist_order_items_clean;
-SELECT TOP 5 * FROM dbo.olist_order_payments_clean;
-
--- =============================================
---  Create main analytical table (fact_sales)
--- =============================================
-DROP TABLE IF EXISTS dbo.fact_sales;
-GO
+/* ============================================================
+   4. CORE FACT TABLE – ITEM LEVEL GRAIN
+============================================================ */
 
 SELECT
     o.order_id,
@@ -67,42 +80,52 @@ JOIN dbo.olist_customers_dataset c
     ON o.customer_id = c.customer_id
 JOIN dbo.olist_products_dataset p
     ON oi.product_id = p.product_id
--- Join with payments table, keeping only the first payment record
 JOIN dbo.olist_order_payments_clean pay
     ON o.order_id = pay.order_id
     AND pay.payment_sequential = 1
 WHERE o.order_status = 'delivered';
 
--- Review analytical table
-SELECT TOP 10 * FROM dbo.fact_sales;
+/* ============================================================
+   5. DATA PROFILING – TEMPORAL COVERAGE
+============================================================ */
 
--- Count missing values in each column
+-- Monthly distribution of orders and revenue
 SELECT 
-    SUM(CASE WHEN order_id IS NULL THEN 1 ELSE 0 END) AS order_id_nulls,
-    SUM(CASE WHEN order_date IS NULL THEN 1 ELSE 0 END) AS order_date_nulls,
-    SUM(CASE WHEN customer_state IS NULL THEN 1 ELSE 0 END) AS customer_state_nulls,
-    SUM(CASE WHEN product_category_name IS NULL THEN 1 ELSE 0 END) AS product_category_name_nulls,
-    SUM(CASE WHEN product_id IS NULL THEN 1 ELSE 0 END) AS product_id_nulls,
-    SUM(CASE WHEN seller_id IS NULL THEN 1 ELSE 0 END) AS seller_id_nulls,
-    SUM(CASE WHEN price IS NULL THEN 1 ELSE 0 END) AS price_nulls,
-    SUM(CASE WHEN freight_value IS NULL THEN 1 ELSE 0 END) AS freight_value_nulls,
-    SUM(CASE WHEN total_value IS NULL THEN 1 ELSE 0 END) AS total_value_nulls,
-    SUM(CASE WHEN payment_type IS NULL THEN 1 ELSE 0 END) AS payment_type_nulls
-FROM dbo.fact_sales;
+    YEAR(order_date)  AS year,
+    MONTH(order_date) AS month,
+    COUNT(*)          AS orders_count,
+    SUM(total_value)  AS total_revenue
+FROM dbo.fact_sales
+GROUP BY YEAR(order_date), MONTH(order_date)
+ORDER BY year, month;
 
--- =============================================
---  Create final table for Power BI with product categories in English
--- =============================================
-DROP TABLE IF EXISTS dbo.fact_sales_final;
-GO
+/* ============================================================
+   6. DATA PROFILING – CATEGORY GAPS
+============================================================ */
+
+-- Identify missing categories
+SELECT 
+    COUNT(*) AS miss_categories
+FROM dbo.fact_sales f
+LEFT JOIN dbo.product_category_name_translation t
+    ON f.product_category_name = t.product_category_name
+WHERE t.product_category_name_english IS NULL;
+
+/* ============================================================
+   BUSINESS DECISION
+   - November 2016 → 0 orders
+   - December 2016 → 1 order
+   - Analysis restricted to Jan 2017 onward
+============================================================ */
+
+/* ============================================================
+   7. FINAL ANALYTICAL TABLE – BUSINESS LAYER
+============================================================ */
 
 SELECT
     f.order_id,
     f.order_date,
     f.customer_state,
-    -- If no match exists in the translation table, 
-    -- t.product_category_name_english remains NULL
-    -- and COALESCE() replaces it with 'unknown'
     COALESCE(t.product_category_name_english, 'unknown') AS product_category,
     f.product_id,
     f.seller_id,
@@ -113,27 +136,31 @@ SELECT
 INTO dbo.fact_sales_final
 FROM dbo.fact_sales f
 LEFT JOIN dbo.product_category_name_translation t
-    ON f.product_category_name = t.product_category_name;
+    ON f.product_category_name = t.product_category_name
+WHERE f.order_date >= '2017-01-01';
 
--- Review final table
-SELECT TOP 10 * FROM dbo.fact_sales_final;
+/* ============================================================
+   8. FINAL VALIDATION
+============================================================ */
 
--- =============================================
---  Missing data and category summary
--- =============================================
+-- Check for unknown categories (# missing cases)
 SELECT 
-    COUNT(*) AS unknown_categories_count
+    COUNT(*) AS unknown_category_records
 FROM dbo.fact_sales_final
 WHERE product_category = 'unknown';
 
--- Order count by product category
+-- Confirm temporal continuity after filtering
 SELECT 
-    product_category,
-    COUNT(*) AS orders_count
+    YEAR(order_date)  AS year,
+    MONTH(order_date) AS month,
+    COUNT(*)          AS orders_count,
+    SUM(total_value)  AS total_revenue
 FROM dbo.fact_sales_final
-GROUP BY product_category
-ORDER BY orders_count DESC;
+GROUP BY YEAR(order_date), MONTH(order_date)
+ORDER BY year, month;
 
--- =============================================
---  dbo.fact_sales_final is now ready for analysis in Power BI
--- =============================================
+/* ============================================================
+   OUTPUT TABLE:
+   dbo.fact_sales_final
+   Ready for Power BI
+============================================================ */
