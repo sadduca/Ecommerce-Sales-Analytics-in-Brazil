@@ -50,7 +50,7 @@ The report includes two main pages:
 - Monthly growth percentage
 - Dynamic month slicer
 
-![Performance Overview](images/resumen_desempeno.png)
+![Performance Overview](images/performance_overview.png)
 
 ---
 
@@ -62,7 +62,7 @@ The report includes two main pages:
 - Dynamic Top 10 states
 - Monthly filtering interaction
 
-![Segment Performance](images/desempeno_por_segmento.png)
+![Segment Performance](images/segment_performance.png)
 
 ---
 
