@@ -1,53 +1,76 @@
 # 📊 End-to-End Business Intelligence Project | Brazil E-commerce Analytics
 
-End-to-end data analytics project based on a Brazilian e-commerce dataset.  
-Data transformation were performed in SQL Server, and interactive business intelligence dashboards were developed in Power BI.
+This project simulates a corporate Business Intelligence environment using a real-world Brazilian e-commerce dataset provided by Olist.
 
-Transformed a normalized relational dataset into an analytical fact table optimized for Power BI reporting.
+The objective was to replicate a real analytical workflow: loading raw CSV files into a local SQL Server database, transforming transactional data using SQL, and developing interactive dashboards in Power BI for business performance analysis.
+
+---
+
+## 🗄 Data Source
+
+Dataset: Brazilian E-Commerce Public Dataset by Olist  
+Source: Kaggle (public dataset provided by Olist)
+Reference: https://doi.org/10.34740/kaggle/dsv/195341 
+
+To simulate a real corporate environment:
+
+- Raw CSV files were imported into a local Microsoft SQL Server database.
+- A structured relational database was created.
+- SQL queries were used to transform transactional data into an analytical dataset optimized for reporting.
+
+This approach mirrors how data teams operate in enterprise environments where databases are queried rather than flat files.
+
+---
+
+## 🚀 Project Highlights
+
+- End-to-end ETL process using SQL Server.
+- Creation of an analytical dataset from normalized transactional tables.
+- Business metric design (revenue, AOV, shipping contribution).
+- Interactive and dynamic dashboard development in Power BI.
+- Simulation of a real-world BI workflow from database to executive reporting.
 
 ---
 
 ## 🛠 Tech Stack
 
-- SQL Server
+- Microsoft SQL Server
 - Power BI
 - DAX
-- Data Cleaning & Transformation
+- SQL
 - ETL
-
----
-
-## 🧱 Data Modeling Process
-
-The project involved building an analytical dataset optimized for business intelligence.
-
-Main steps:
-
-1. Exploration of raw transactional tables.
-2. Monetary value normalization (price and freight adjustments).
-3. Creation of intermediate analytical table `fact_sales`.
-4. Filtering for delivered orders only.
-5. Product category translation to English.
-6. Missing value handling using `COALESCE`.
-7. Final analytical table `fact_sales_final` prepared for Power BI consumption.
-
-The complete SQL transformation script is available in the `/sql` directory.
+- Data Cleaning & Transformation
 
 ---
 
 ## 📈 Power BI Dashboard
 
-The report includes two main pages:
+The report is structured into two main analytical pages.
+
+### 🔹 Shared KPIs (Available in Both Pages)
+
+The following core metrics are displayed consistently across both dashboards:
+
+- Total Revenue
+- Revenue (Sales)
+- Revenue (Shipping)
+
+These KPIs provide a unified performance reference across different analytical perspectives.
+
+---
 
 ### 1️⃣ Performance Overview
 
-- Total revenue KPIs
-- Revenue breakdown (sales & freight)
+Focus: Executive-level performance monitoring.
+
+Includes:
+
 - Total products sold
-- Average ticket value
-- Average freight value
-- Revenue time evolution
-- Monthly growth percentage
+- Average Order Value (AOV)
+- Average product revenue per order
+- Average shipping revenue per order
+- Revenue time-series evolution
+- Monthly Growth (MoM %)
 - Dynamic month slicer
 
 ![Performance Overview](images/performance_overview.png)
@@ -56,24 +79,29 @@ The report includes two main pages:
 
 ### 2️⃣ Segment Performance
 
-- Revenue by state
-- Revenue distribution by product category
-- Payment type analysis
-- Dynamic Top 10 states
+Focus: Regional and product segmentation analysis.
+
+Includes:
+
+- Top 10 Brazilian states by revenue
+- Top 10 Brazilian states by products sold
+- Top 10 most profitable product categories
+- Payment type distribution
 - Monthly filtering interaction
 
 ![Segment Performance](images/segment_performance.png)
 
 ---
 
-## 🎯 Project Objective
+## 🎯 Business Objective
 
-To design a structured analytical dataset and develop an interactive dashboard that enables:
+This project aims to demonstrate how raw transactional data can be transformed into actionable business insights by:
 
-- Business performance monitoring
-- Revenue distribution analysis
-- Time-series evaluation
-- Multi-dimensional segmentation
+- Monitoring revenue performance
+- Understanding logistics contribution (shipping vs sales)
+- Evaluating time-series growth
+- Analyzing regional and product-level segmentation
+- Supporting strategic decision-making
 
 ---
 
@@ -99,3 +127,5 @@ ecommerce-analytics-brazil/
 Santino Adduca  
 Data Analyst | Data Scientist  
 Buenos Aires, Argentina
+
+If you would like to discuss this project or explore potential collaboration opportunities, feel free to reach out via email or connect with me on LinkedIn.
