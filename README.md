@@ -68,8 +68,9 @@ Includes:
 - Average Order Value (AOV)
 - Average product revenue per order
 - Average shipping revenue per order
-- Revenue time-series evolution
+- Revenues and products sold time-series evolution
 - Monthly Growth (MoM %)
+- Total Revenue and Average Product Revenue per Order Over the Year
 - Dynamic month slicer
 
 ![Performance Overview](images/performance_overview.png)
