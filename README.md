@@ -1,8 +1,11 @@
 # 📊 End-to-End Business Intelligence Project | Brazil E-commerce Analytics
 
-This project simulates a corporate Business Intelligence environment using a real-world Brazilian e-commerce dataset provided by Olist.
+This project simulates a corporate Business Intelligence environment using the Brazilian E-commerce Public Dataset provided by Olist.
 
-The objective was to replicate a real analytical workflow: loading raw CSV files into a local SQL Server database, transforming transactional data using SQL, and developing interactive dashboards in Power BI for business performance analysis.
+It replicates a real analytical workflow: loading raw CSV files into a local SQL Server database, transforming transactional data using SQL, and developing an executive dashboard in Power BI for performance analysis.
+
+📅 Period analyzed: January 2017 – August 2018
+(Orders prior to 2017 were excluded due to negligible transaction volume.)
 
 ---
 
@@ -14,10 +17,11 @@ Reference: https://doi.org/10.34740/kaggle/dsv/195341
 To simulate a real corporate environment:
 
 - Raw CSV files were imported into a local Microsoft SQL Server database.
-- A structured relational database was created.
-- SQL queries were used to transform transactional data into an analytical dataset optimized for reporting.
+- A structured relational model was created.
+- SQL transformations were applied to build an analytical fact table at order-item level.
+- The dataset was optimized for executive reporting in Power BI.
 
-This approach mirrors how data teams operate in enterprise environments where databases are queried rather than flat files.
+This approach mirrors enterprise BI workflows where analytical models are built directly from relational databases.
 
 ---
 
@@ -26,7 +30,8 @@ This approach mirrors how data teams operate in enterprise environments where da
 - End-to-end ETL process using SQL Server.
 - Creation of an analytical dataset from normalized transactional tables.
 - Business metric design (revenue, AOV, shipping contribution).
-- Interactive and dynamic dashboard development in Power BI.
+- Executive dashboard development in Power BI.
+- Identification and quantification of a category classification gap impacting revenue analysis.
 - Simulation of a real-world BI workflow from database to executive reporting.
 
 ---
@@ -34,11 +39,10 @@ This approach mirrors how data teams operate in enterprise environments where da
 ## 🛠 Tech Stack
 
 - Microsoft SQL Server
+- SQL
+- ETL (Extract, Transform, Load)
 - Power BI
 - DAX
-- SQL
-- ETL
-- Data Cleaning & Transformation
 
 ---
 
@@ -101,7 +105,17 @@ This project aims to demonstrate how raw transactional data can be transformed i
 - Understanding logistics contribution (shipping vs sales)
 - Evaluating time-series growth
 - Analyzing regional and product-level segmentation
+- Detecting structural data quality gaps
 - Supporting strategic decision-making
+
+---
+
+## 🌐 Full BI Analysis
+
+The complete strategic analysis, insights interpretation, and executive commentary are available in my portfolio:
+
+🔗 Portfolio (Full Business Analysis):
+[https://github.com/sadduca/Ecommerce-Sales-Analytics-in-Brazil](https://www.notion.so/End-to-End-Business-Intelligence-Project-Brazil-E-commerce-Analytics-30b43fe0ba2e8062967ded3fd84260ff)
 
 ---
 
