@@ -115,7 +115,7 @@ This project aims to demonstrate how raw transactional data can be transformed i
 The complete strategic analysis, insights interpretation, and executive commentary are available in my portfolio:
 
 🔗 Portfolio (Full Business Analysis):
-[https://github.com/sadduca/Ecommerce-Sales-Analytics-in-Brazil](https://www.notion.so/End-to-End-Business-Intelligence-Project-Brazil-E-commerce-Analytics-30b43fe0ba2e8062967ded3fd84260ff)
+[https://www.notion.so/End-to-End-Business-Intelligence-Project-Brazil-E-commerce-Analytics-30b43fe0ba2e8062967ded3fd84260ff](https://www.notion.so/End-to-End-Business-Intelligence-Project-Brazil-E-commerce-Analytics-30b43fe0ba2e8062967ded3fd84260ff)
 
 ---
 
