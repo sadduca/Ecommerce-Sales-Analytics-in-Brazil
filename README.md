@@ -4,9 +4,6 @@ This project simulates a corporate Business Intelligence environment using the B
 
 It replicates a real analytical workflow: loading raw CSV files into a local SQL Server database, transforming transactional data using SQL, and developing an executive dashboard in Power BI for performance analysis.
 
-📅 Period analyzed: January 2017 – August 2018
-(Orders prior to 2017 were excluded due to negligible transaction volume.)
-
 ---
 
 ## 🗄 Data Source
@@ -22,6 +19,9 @@ To simulate a real corporate environment:
 - The dataset was optimized for executive reporting in Power BI.
 
 This approach mirrors enterprise BI workflows where analytical models are built directly from relational databases.
+
+📅 Period analyzed: January 2017 – August 2018
+(Orders prior to 2017 were excluded due to negligible transaction volume.)
 
 ---
 
