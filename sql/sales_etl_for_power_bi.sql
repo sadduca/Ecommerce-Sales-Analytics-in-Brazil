@@ -4,7 +4,6 @@
    Period analyzed: Jan 2017 onward
 ============================================================ */
 
-
 /* ============================================================
    1. REVIEW SOURCE TABLE STRUCTURES
 ============================================================ */
@@ -22,7 +21,6 @@ WHERE TABLE_NAME IN (
 )
 ORDER BY TABLE_NAME, ORDINAL_POSITION;
 
-
 /* ============================================================
    2. DROP EXISTING TABLES (IDEMPOTENT EXECUTION)
 ============================================================ */
@@ -32,7 +30,6 @@ DROP TABLE IF EXISTS dbo.olist_order_payments_clean;
 DROP TABLE IF EXISTS dbo.fact_sales;
 DROP TABLE IF EXISTS dbo.fact_sales_final;
 GO
-
 
 /* ============================================================
    3. CLEANING LAYER – MONETARY NORMALIZATION
@@ -50,7 +47,6 @@ SELECT
 INTO dbo.olist_order_items_clean
 FROM dbo.olist_order_items_dataset;
 
-
 -- Convert payment value from cents to currency units
 SELECT
     order_id,
@@ -60,7 +56,6 @@ SELECT
     payment_value / 100.0 AS payment_value
 INTO dbo.olist_order_payments_clean
 FROM dbo.olist_order_payments_dataset;
-
 
 /* ============================================================
    4. CORE FACT TABLE – ITEM LEVEL GRAIN
@@ -90,7 +85,6 @@ JOIN dbo.olist_order_payments_clean pay
     AND pay.payment_sequential = 1
 WHERE o.order_status = 'delivered';
 
-
 /* ============================================================
    5. DATA PROFILING – TEMPORAL COVERAGE
 ============================================================ */
@@ -105,7 +99,6 @@ FROM dbo.fact_sales
 GROUP BY YEAR(order_date), MONTH(order_date)
 ORDER BY year, month;
 
-
 /* ============================================================
    6. DATA PROFILING – CATEGORY GAPS
 ============================================================ */
@@ -118,14 +111,12 @@ LEFT JOIN dbo.product_category_name_translation t
     ON f.product_category_name = t.product_category_name
 WHERE t.product_category_name_english IS NULL;
 
-
 /* ============================================================
    BUSINESS DECISION
    - November 2016 → 0 orders
    - December 2016 → 1 order
    - Analysis restricted to Jan 2017 onward
 ============================================================ */
-
 
 /* ============================================================
    7. FINAL ANALYTICAL TABLE – BUSINESS LAYER
@@ -147,7 +138,6 @@ FROM dbo.fact_sales f
 LEFT JOIN dbo.product_category_name_translation t
     ON f.product_category_name = t.product_category_name
 WHERE f.order_date >= '2017-01-01';
-
 
 /* ============================================================
    8. FINAL VALIDATION
@@ -172,6 +162,12 @@ SELECT
     AVG(total_value) AS avg_ticket_unknown
 FROM dbo.fact_sales_final
 WHERE product_category = 'unknown';
+
+-- Percentage of total revenue impacted
+SELECT 
+    SUM(CASE WHEN product_category = 'unknown' THEN total_value ELSE 0 END) 
+    / SUM(total_value) * 100 AS pct_revenue_unknown
+FROM dbo.fact_sales_final;
 
 -- Confirm temporal continuity after filtering
 SELECT 
